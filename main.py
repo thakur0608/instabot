@@ -147,12 +147,12 @@ def post_a_comment(insta_username):
       print "Unable to add comment. Try again!"
 def start_choice():
   print "what do you want to do"
-  print "1.to get self info/n 2.to get user info/n 3.get own post/n 4.get user post/n 5.like own post/n 6.like user post/n 7.comment on own post/n 8. comment on users post/n"
+  print "1.to get self info\n 2.to get user info\n 3.get own post\n 4.get user post\n 5.like own post\n 6.like user post\n 7.comment on own post\n 8. comment on users post\n"
   choice= raw_input("enter your choice")
   if choice==1:
     self_info()
   elif choice==2:
-    print "choose user reccommended user/n 1.darkmagician_10/n 2.1s211998"
+    print "choose user reccommended user/\ 1.darkmagician_10\n 2.1s211998"
     user_choice=raw_input("enter your choice")
     if user_choice==1:
       get_user_info("darkmagician_10")
@@ -185,5 +185,4 @@ def start_choice():
       post_a_comment("darkmagician_10")
     elif user_choice == 2:
       post_a_comment("ls211998")
-
 
