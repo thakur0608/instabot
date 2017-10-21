@@ -1,5 +1,6 @@
 import requests
 import urllib
+from termcolor import colored
 
 BASE_URL = 'https://api.instagram.com/v1/'
 APP_ACCESS_TOKEN ="5701860028.67656b6.f52a12b27d4244768e570138a5b75604"
@@ -21,7 +22,7 @@ def self_info():
       print 'User does not exist!'
   else:
     print 'Status code other than 200 received!'
-#getting user id
+# getting user id
 def get_user_id(insta_username):
     request_url = (BASE_URL + 'users/search?q=%s&access_token=%s') % (insta_username, APP_ACCESS_TOKEN)
     print 'GET request url : %s' % (request_url)
@@ -55,7 +56,7 @@ def get_user_info(insta_username):
       print 'There is no data for this user!'
   else:
     print 'Status code other than 200 received!'
-#getting media of own post
+# getting media of own post
 def get_own_post():
   request_url = (BASE_URL + 'users/self/media/recent/?access_token=%s') % (APP_ACCESS_TOKEN)
   print 'GET request url : %s' % (request_url)
@@ -145,21 +146,65 @@ def post_a_comment(insta_username):
       print "Successfully added a new comment!"
   else:
       print "Unable to add comment. Try again!"
+# own existed comments
+def existed_self_post_comment():
+    media_id = get_own_post()
+    request_url = (BASE_URL + "media/%s/comments?access_token=%s") % (media_id, APP_ACCESS_TOKEN)
+    print "\n" + request_url
+    comment_list = requests.get(request_url).json()
+    if comment_list['meta']['code'] == 200:
+      if comment_list['data']:
+        position = 1
+
+        # PRINTING ALL EXISTED COMMENTS
+        for temp in comment_list['data']:
+          print ("%d.%s : %s" % (position, temp['from']['username'], temp['text']), 'blue')
+          position = position + 1
+      else:
+        print ("\nNO COMMENT FOUND", 'red')
+
+    else:
+      print ("\nSTATUS CODE OTHER THAN 200 IS RECIEVED", 'red')
+    start_choice()
+# existed user comments
+def existed_user_post_comment(insta_username):
+    media_id = get_user_post(insta_username)
+    request_url = (BASE_URL + "media/%s/comments?access_token=%s") % (media_id, APP_ACCESS_TOKEN)
+    print '\n' + request_url
+    comment_list = requests.get(request_url).json()
+    if comment_list['meta']['code'] == 200:
+      if comment_list['data']:
+        position = 1
+
+        # PRINTING EXISTED COMMENTS
+        for temp in comment_list['data']:
+          print ("%d.%s : %s" % (position, temp['from']['username'], temp['text']), 'blue')
+          position = position + 1
+      else:
+        print ("\nNO COMMENT FOUND", 'red')
+        start_choice()
+    else:
+      print ("\nSTATUS CODE OTHER THAN 200 IS RECIEVED", 'red')
+    start_choice()
+# main function starts from here
 def start_choice():
-  print "what do you want to do"
-  print "1.to get self info\n 2.to get user info\n 3.get own post\n 4.get user post\n 5.like own post\n 6.like user post\n 7.comment on own post\n 8. comment on users post\n"
-  choice= raw_input("enter your choice")
+  print colored("what do you want to do",'green')
+  print colored("1.to get self info\n 2.to get user info\n 3.get own post\n 4.get user post\n 5.like own post\n 6.like user post\n 7.comment on own post\n 8. comment on users post\n 9. existed own post comments \n 10. existed user post comments\n 11.change user\n",'red')
+  choice= int(raw_input("enter your choice"))
   if choice==1:
     self_info()
+    start_choice()
   elif choice==2:
-    print "choose user reccommended user/\ 1.darkmagician_10\n 2.1s211998"
+    print "choose user reccommended user/\n 1.darkmagician_10\n 2.1s211998"
     user_choice=raw_input("enter your choice")
     if user_choice==1:
       get_user_info("darkmagician_10")
     elif user_choice==2:
       get_user_info("ls211998")
+    start_choice()
   elif choice==3:
     get_own_post()
+    start_choice()
   elif choice==4:
     print "choose user reccommended user/n 1.darkmagician_10/n 2.1s211998"
     user_choice = raw_input("enter your choice")
@@ -167,8 +212,10 @@ def start_choice():
       get_user_post("darkmagician_10")
     elif user_choice == 2:
       get_user_post("ls211998")
+    start_choice()
   elif choice==5:
     like_own_post()
+    start_choice()
   elif choice==6:
     print "choose user reccommended user/n 1.darkmagician_10/n 2.1s211998"
     user_choice = raw_input("enter your choice")
@@ -176,8 +223,10 @@ def start_choice():
       like_a_post("darkmagician_10")
     elif user_choice == 2:
       like_a_post("ls211998")
+    start_choice()
   elif choice==7:
     own_post_comment()
+    start_choice()
   elif choice ==8:
     print "choose user reccommended user/n 1.darkmagician_10/n 2.1s211998"
     user_choice = raw_input("enter your choice")
@@ -185,4 +234,20 @@ def start_choice():
       post_a_comment("darkmagician_10")
     elif user_choice == 2:
       post_a_comment("ls211998")
+    start_choice()
+  elif choice==9:
+    existed_self_post_comment()
+    start_choice()
+  elif choice==10:
+    print "choose user reccommended user/n 1.darkmagician_10/n 2.1s211998"
+    user_choice = raw_input("enter your choice")
+    if user_choice == 1:
+      existed_user_post_comment("darkmagician_10")
+    elif user_choice == 2:
+      existed_user_post_comment("ls211998")
+    start_choice()
+
+
+  elif choice ==11:
+    start_choice()
 
